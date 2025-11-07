@@ -1,0 +1,60 @@
+DISPLAY_SIZE = (350, 350)  # Set desired display size, e.g. 350x350
+
+class FaceDetectionGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Face Detection GUI")
+        self.image_path = None
+        self.image = None
+        self.photo_images = [None]*7
+
+        button_texts = [
+            "Load Image", "Bilateral Filter", "ROI Extraction",
+            "Deep Multilevel Structural Pattern", "Deep Statistical Descriptor",
+            "Facial Landmark Features", "Model Prediction"
+        ]
+        button_commands = [
+            self.load_image, self.bilateral_filter, self.roi_extraction,
+            self.deep_multilevel_structural_pattern, self.deep_statistical_descriptor,
+            self.facial_landmark_features, self.model_prediction
+        ]
+
+        for i, (text, cmd) in enumerate(zip(button_texts, button_commands)):
+            btn = tk.Button(root, text=text, command=cmd, width=25)
+            btn.grid(row=0, column=i)
+
+        self.image_labels = []
+        for i in range(7):
+            lbl = tk.Label(root, text=f"Box {i+1}", width=DISPLAY_SIZE[0]//10, height=DISPLAY_SIZE[1]//25, bg='gray')  # Increased label size
+            lbl.grid(row=1, column=i, padx=5, pady=5)
+            self.image_labels.append(lbl)
+
+    def load_image(self):
+        folder_path = os.path.join(os.getcwd(), "Test_data")
+        filename = filedialog.askopenfilename(
+            initialdir=folder_path,
+            title="Select Image",
+            filetypes=[("Image Files", "*.jpg;*.jpeg;*.png")]
+        )
+        if filename:
+            self.image_path = filename
+            self.image = Image.open(filename)
+            img_fixed = self.image.resize(DISPLAY_SIZE)
+            self.display_image(img_fixed, 0)
+
+    def display_image(self, img, box_index):
+        img_fixed = img.resize(DISPLAY_SIZE)
+        photo = ImageTk.PhotoImage(img_fixed)
+        self.photo_images[box_index] = photo
+        self.image_labels[box_index].config(image=photo, text='')
+
+
+
+
+
+
+
+
+
+
+
